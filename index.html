@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Search App (Offline Demo)</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif; }
+    body { background:#f0f2f5; color:#333; }
+    header { background:#0077ff; color:#fff; padding:1rem; text-align:center; }
+    header h1 { font-size:2rem; }
+    main { max-width:900px; margin:2rem auto; padding:0 1rem; }
+    .search-bar { display:flex; justify-content:center; margin-bottom:2rem; gap:0.5rem; flex-wrap:wrap; }
+    .search-bar input { padding:0.5rem 1rem; width:250px; border-radius:5px; border:1px solid #0077ff; outline:none; }
+    .search-bar button { padding:0.5rem 1rem; border:none; border-radius:5px; background:#0077ff; color:#fff; cursor:pointer; transition:all 0.3s; }
+    .search-bar button:hover { background:#005bb5; }
+    .movies-container { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:1rem; }
+    .movie-card { background:#fff; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); overflow:hidden; transition: transform 0.3s; }
+    .movie-card:hover { transform:scale(1.05); }
+    .movie-card img { width:100%; height:270px; object-fit:cover; }
+    .movie-card .movie-info { padding:0.5rem 1rem; }
+    .movie-card .movie-info h3 { font-size:1rem; margin-bottom:0.3rem; color:#0077ff; }
+    .movie-card .movie-info p { font-size:0.9rem; color:#555; }
+    @media(max-width:600px) { .search-bar input { width:100%; } .movie-card img { height:220px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Movie Search App (Offline Demo)</h1>
+  </header>
+
+  <main>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search for movies...">
+      <button id="searchBtn">Search</button>
+    </div>
+    <div class="movies-container" id="moviesContainer"></div>
+  </main>
+
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const moviesContainer = document.getElementById('moviesContainer');
+
+    // Local sample movies
+    const movies = [
+      { title: "Avengers: Endgame", year: "2019", poster: "https://m.media-amazon.com/images/I/81ExhpBEbHL._AC_SY679_.jpg" },
+      { title: "Inception", year: "2010", poster: "https://m.media-amazon.com/images/M/MV5BMjExMjkwNTQ0Nl5BMl5BanBnXkFtZTcwNTY0OTk1Mw@@._V1_.jpg" },
+      { title: "The Dark Knight", year: "2008", poster: "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_.jpg" },
+      { title: "Interstellar", year: "2014", poster: "https://m.media-amazon.com/images/M/MV5BYzdjMDAxZGItMjI2My00ODA1LTlkNzItOWFjMDU5ZDJlYWY3XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" },
+      { title: "Spider-Man: No Way Home", year: "2021", poster: "https://m.media-amazon.com/images/M/MV5BMmFiZGZjMmEtMTA0Ni00MzA2LTljMTYtZGI2MGJmZWYzZTQ2XkEyXkFqcGc@._V1_.jpg" },
+      { title: "Titanic", year: "1997", poster: "https://m.media-amazon.com/images/I/91pZ7Rcp4iL._UF1000,1000_QL80_.jpg" },
+      { title: "Avatar", year: "2009", poster: "https://m.media-amazon.com/images/I/41kTVLeW1CL._AC_.jpg" },
+      { title: "Joker", year: "2019", poster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUhpImhE0LQJh-LxF43KGMvfZ2CqKPWnO8rA&s" },
+      { title: "Frozen II", year: "2019", poster: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsqLXpvbHZWyu9foNkSxF-iBjz25uaMDoUlg&s" },
+      { title: "The Lion King", year: "2019", poster: "https://lumiere-a.akamaihd.net/v1/images/p_thelionking2019_19732_c1561d41.jpeg" }
+    ];
+
+    function displayMovies(filteredMovies) {
+      moviesContainer.innerHTML = '';
+      if(filteredMovies.length === 0) {
+        moviesContainer.innerHTML = `<p style="text-align:center;">No movies found!</p>`;
+        return;
+      }
+      filteredMovies.forEach(movie => {
+        const movieCard = document.createElement('div');
+        movieCard.classList.add('movie-card');
+        movieCard.innerHTML = `
+          <img src="${movie.poster}" alt="${movie.title}">
+          <div class="movie-info">
+            <h3>${movie.title}</h3>
+            <p>${movie.year}</p>
+          </div>
+        `;
+        moviesContainer.appendChild(movieCard);
+      });
+    }
+
+    function searchMovies() {
+      const query = searchInput.value.trim().toLowerCase();
+      const filtered = movies.filter(movie => movie.title.toLowerCase().includes(query));
+      displayMovies(filtered);
+    }
+
+    searchBtn.addEventListener('click', searchMovies);
+    searchInput.addEventListener('keypress', e => { if(e.key === 'Enter') searchMovies(); });
+
+    // Show all movies initially
+    displayMovies(movies);
+  </script>
+</body>
+</html>
